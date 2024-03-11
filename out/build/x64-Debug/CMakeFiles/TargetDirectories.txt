@@ -1,0 +1,15 @@
+C:/Users/Dmitry/vlk_test/out/build/x64-Debug/CMakeFiles/edit_cache.dir
+C:/Users/Dmitry/vlk_test/out/build/x64-Debug/CMakeFiles/rebuild_cache.dir
+C:/Users/Dmitry/vlk_test/out/build/x64-Debug/glfw/CMakeFiles/edit_cache.dir
+C:/Users/Dmitry/vlk_test/out/build/x64-Debug/glfw/CMakeFiles/rebuild_cache.dir
+C:/Users/Dmitry/vlk_test/out/build/x64-Debug/glfw/src/CMakeFiles/update_mappings.dir
+C:/Users/Dmitry/vlk_test/out/build/x64-Debug/glfw/src/CMakeFiles/glfw.dir
+C:/Users/Dmitry/vlk_test/out/build/x64-Debug/glfw/src/CMakeFiles/edit_cache.dir
+C:/Users/Dmitry/vlk_test/out/build/x64-Debug/glfw/src/CMakeFiles/rebuild_cache.dir
+C:/Users/Dmitry/vlk_test/out/build/x64-Debug/glm/CMakeFiles/edit_cache.dir
+C:/Users/Dmitry/vlk_test/out/build/x64-Debug/glm/CMakeFiles/rebuild_cache.dir
+C:/Users/Dmitry/vlk_test/out/build/x64-Debug/glm/glm/CMakeFiles/edit_cache.dir
+C:/Users/Dmitry/vlk_test/out/build/x64-Debug/glm/glm/CMakeFiles/rebuild_cache.dir
+C:/Users/Dmitry/vlk_test/out/build/x64-Debug/test1/CMakeFiles/SIMPLE_APP.dir
+C:/Users/Dmitry/vlk_test/out/build/x64-Debug/test1/CMakeFiles/edit_cache.dir
+C:/Users/Dmitry/vlk_test/out/build/x64-Debug/test1/CMakeFiles/rebuild_cache.dir
