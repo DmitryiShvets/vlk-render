@@ -2,6 +2,17 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #include <vector>
+#include <optional>
+
+struct QueueFamilyIndices {
+	std::optional<uint32_t> graphicsFamily;
+
+	bool isComplete() {
+		return graphicsFamily.has_value();
+	}
+};
+
+
 class TestApplication {
 public:
 	void run();
@@ -36,8 +47,21 @@ private:
 		const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
 		void* pUserData);
 
+	void pickPhysicalDevice();
+
+	bool isDeviceSuitable(VkPhysicalDevice device);
+
+	QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
+
+	void createLogicalDevice();
+
+
+
 	VkInstance instance;
 	VkDebugUtilsMessengerEXT m_debugMessenger;
+	VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
+	VkDevice m_device;
+	VkQueue m_graphicsQueue;
 	GLFWwindow* m_window;
 	const uint32_t WIDTH = 800;
 	const uint32_t HEIGHT = 600;
