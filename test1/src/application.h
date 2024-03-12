@@ -77,6 +77,12 @@ private:
 
 	void createImageViews();
 
+	void createGraphicsPipeline();
+
+	VkShaderModule createShaderModule(const std::vector<char>& code);
+
+	void createRenderPass();
+
 	VkInstance instance;
 	VkDebugUtilsMessengerEXT m_debugMessenger;
 	VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
@@ -86,10 +92,13 @@ private:
 	VkSurfaceKHR m_surface;
 	GLFWwindow* m_window;
 	VkSwapchainKHR m_swapChain;
-	std::vector<VkImage> swapChainImages;
-	VkFormat swapChainImageFormat;
-	VkExtent2D swapChainExtent;
-	std::vector<VkImageView> swapChainImageViews;
+	std::vector<VkImage> m_swapChainImages;
+	VkFormat m_swapChainImageFormat;
+	VkExtent2D m_swapChainExtent;
+	std::vector<VkImageView> m_swapChainImageViews;
+	VkPipelineLayout m_pipelineLayout;
+	VkRenderPass m_renderPass;
+	VkPipeline m_graphicsPipeline;
 
 	const uint32_t WIDTH = 800;
 	const uint32_t HEIGHT = 600;
