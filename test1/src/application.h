@@ -75,6 +75,8 @@ private:
 
 	void createSwapChain();
 
+	void createImageViews();
+
 	VkInstance instance;
 	VkDebugUtilsMessengerEXT m_debugMessenger;
 	VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
@@ -87,7 +89,7 @@ private:
 	std::vector<VkImage> swapChainImages;
 	VkFormat swapChainImageFormat;
 	VkExtent2D swapChainExtent;
-
+	std::vector<VkImageView> swapChainImageViews;
 
 	const uint32_t WIDTH = 800;
 	const uint32_t HEIGHT = 600;
