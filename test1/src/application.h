@@ -19,6 +19,9 @@ struct SwapChainSupportDetails {
 	std::vector<VkPresentModeKHR> presentModes;
 };
 
+const int MAX_FRAMES_IN_FLIGHT = 2;
+
+
 class TestApplication {
 public:
 	void run();
@@ -83,6 +86,18 @@ private:
 
 	void createRenderPass();
 
+	void createFramebuffers();
+
+	void createCommandPool();
+
+	void createCommandBuffer();
+
+	void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+
+	void drawFrame();
+
+	void createSyncObjects();
+
 	VkInstance instance;
 	VkDebugUtilsMessengerEXT m_debugMessenger;
 	VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
@@ -99,7 +114,13 @@ private:
 	VkPipelineLayout m_pipelineLayout;
 	VkRenderPass m_renderPass;
 	VkPipeline m_graphicsPipeline;
-
+	std::vector<VkFramebuffer> m_swapChainFramebuffers;
+	VkCommandPool m_commandPool;
+	VkCommandBuffer m_commandBuffer;
+	//std::vector<VkCommandBuffer> m_commandBuffers;
+	VkSemaphore m_imageAvailableSemaphore;
+	VkSemaphore m_renderFinishedSemaphore;
+	VkFence m_inFlightFence;
 	const uint32_t WIDTH = 800;
 	const uint32_t HEIGHT = 600;
 
