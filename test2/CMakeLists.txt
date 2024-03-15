@@ -9,6 +9,8 @@ set(PROJ_SRC
 			 "src/pipeline.cpp"
 			 "src/device.h"
 			 "src/device.cpp"
+			 "src/swap_chain.h"
+			 "src/swap_chain.cpp"
 )
 
 add_executable (${PROJ_NAME} ${PROJ_SRC})

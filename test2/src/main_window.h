@@ -14,6 +14,7 @@ namespace sve {
 		MainWindow(const MainWindow&) = delete;
 		MainWindow& operator=(const MainWindow&) = delete;
 		bool is_closing() { return glfwWindowShouldClose(m_window); }
+		VkExtent2D get_extent() { return VkExtent2D{ width,height }; }
 	private:
 
 		void init();
