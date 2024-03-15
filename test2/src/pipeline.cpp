@@ -15,6 +15,11 @@ sve::PipeLine::~PipeLine()
 	vkDestroyPipeline(m_device.device(), m_graphics_pipeline, nullptr);
 }
 
+void sve::PipeLine::bind_buffer(VkCommandBuffer buffer)
+{
+	vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphics_pipeline);
+}
+
 sve::PipelineConfigInfo sve::PipeLine::get_default_config(uint32_t width, uint32_t height)
 {
 	PipelineConfigInfo configInfo{};

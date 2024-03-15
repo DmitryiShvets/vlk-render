@@ -13,6 +13,7 @@ namespace sve {
 		static constexpr int WIDTH = 800;
 		static constexpr int HEIGHT = 600;
 
+		void draw_frame();
 
 		TestApp(const TestApp&) = delete;
 		TestApp& operator=(const TestApp&) = delete;

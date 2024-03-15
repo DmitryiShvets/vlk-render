@@ -25,6 +25,7 @@ namespace sve {
 		PipeLine(Device& device,const PipelineConfigInfo& config,const std::string& vert_shader_filepath, const std::string& frag_shader_filepath);
 		~PipeLine();
 
+		void bind_buffer(VkCommandBuffer buffer);
 		PipeLine(const PipeLine&) = delete;
 		PipeLine& operator=(const PipeLine&) = delete;
 		static PipelineConfigInfo get_default_config(uint32_t width, uint32_t height);
