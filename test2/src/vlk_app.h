@@ -5,8 +5,18 @@
 #include "model.h"
 #include <memory>
 namespace sve {
+
+	struct PushConstantData
+	{
+		glm::vec2 offset;
+		alignas(16) glm::vec3 color;
+	};
+
+
 	class TestApp {
 	public:
+
+
 
 		void run();
 		TestApp();

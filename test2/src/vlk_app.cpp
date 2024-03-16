@@ -2,6 +2,8 @@
 #include <stdexcept>
 #include <array>
 #include <cassert>
+
+
 void sve::TestApp::run() {
 	while (!main_window.is_closing()) {
 		glfwPollEvents();
@@ -64,12 +66,17 @@ void sve::TestApp::load_models()
 
 void sve::TestApp::create_pipline_layout()
 {
+	VkPushConstantRange push_constant_range{};
+	push_constant_range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+	push_constant_range.offset = 0;
+	push_constant_range.size = sizeof(PushConstantData);
+
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 	pipelineLayoutInfo.setLayoutCount = 0; // Optional
 	pipelineLayoutInfo.pSetLayouts = nullptr; // Optional
-	pipelineLayoutInfo.pushConstantRangeCount = 0; // Optional
-	pipelineLayoutInfo.pPushConstantRanges = nullptr; // Optional
+	pipelineLayoutInfo.pushConstantRangeCount = 1; // Optional
+	pipelineLayoutInfo.pPushConstantRanges = &push_constant_range; // Optional
 
 
 	if (vkCreatePipelineLayout(m_device.device(), &pipelineLayoutInfo, nullptr, &m_pipeline_layout) != VK_SUCCESS) {
@@ -182,7 +189,24 @@ void sve::TestApp::record_command_buffer(int image_index)
 
 	m_pipeline->bind_buffer(m_command_buffers[image_index]);
 	m_model->bind(m_command_buffers[image_index]);
-	m_model->draw(m_command_buffers[image_index]);
+
+	for (int j = 0; j < 4; j++)
+	{
+		PushConstantData constant{};
+		constant.offset = { 0.0f, -0.4f + j * 0.25f };
+		constant.color = { 0.0f, 0.0f, 0.2f + j * 0.2f };
+
+		vkCmdPushConstants(
+			m_command_buffers[image_index],
+			m_pipeline_layout,
+			VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
+			0,
+			sizeof(PushConstantData),
+			&constant);
+
+		m_model->draw(m_command_buffers[image_index]);
+	}
+
 
 	vkCmdEndRenderPass(m_command_buffers[image_index]);
 
