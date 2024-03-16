@@ -23,9 +23,13 @@ namespace sve {
 		void create_pipline_layout();
 		void create_pipline();
 		void create_command_buffer();
+		void record_command_buffer(int image_index);
+		void free_command_buffer();
+		void recreate_swapchain();
 		MainWindow main_window{ WIDTH,HEIGHT,"Test app" };
 		Device m_device{ main_window };
-		SwapChain m_swap_chain{ m_device,main_window.get_extent() };
+		//SwapChain m_swap_chain{ m_device,main_window.get_extent() };
+		std::unique_ptr<SwapChain> m_swapchain;
 		//PipeLine m_pipeline{ m_device,PipeLine::get_default_config(WIDTH,HEIGHT), "../../../../test2/res/shaders/vert.spv","../../../../test2/res/shaders/frag.spv" };
 		std::unique_ptr<PipeLine> m_pipeline;
 		std::unique_ptr<Model> m_model;

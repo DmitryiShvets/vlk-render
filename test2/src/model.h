@@ -11,6 +11,7 @@ namespace sve {
 		struct Vertex
 		{
 			glm::vec2 pos;
+			glm::vec3 color;
 
 			static std::vector<VkVertexInputBindingDescription> get_binding_description();
 			static std::vector<VkVertexInputAttributeDescription> get_attribute_description();

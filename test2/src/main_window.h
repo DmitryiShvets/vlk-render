@@ -10,7 +10,8 @@ namespace sve {
 		MainWindow(int width, int height, std::string app_name);
 		~MainWindow();
 		void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
-
+		bool is_window_resized() { return framebuffer_resized; };
+		void reset_window_resize_flag() { framebuffer_resized = false; };
 		MainWindow(const MainWindow&) = delete;
 		MainWindow& operator=(const MainWindow&) = delete;
 		bool is_closing() { return glfwWindowShouldClose(m_window); }
@@ -18,10 +19,12 @@ namespace sve {
 	private:
 
 		void init();
-
+		static void resized_window_callback(GLFWwindow* window, int widtg, int height);
 		GLFWwindow* m_window;
 		std::string window_name;
-		const uint32_t width;
-		const uint32_t height;
+		uint32_t width;
+		uint32_t height;
+		bool framebuffer_resized = false;
+
 	};
 }

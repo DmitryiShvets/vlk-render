@@ -21,23 +21,17 @@ void sve::PipeLine::bind_buffer(VkCommandBuffer buffer)
 	vkCmdBindPipeline(buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphics_pipeline);
 }
 
-sve::PipelineConfigInfo sve::PipeLine::get_default_config(uint32_t width, uint32_t height)
+void sve::PipeLine::set_default_config(PipelineConfigInfo& configInfo)
 {
-	PipelineConfigInfo configInfo{};
-
 	configInfo.inputAssemblyInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 	configInfo.inputAssemblyInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 	configInfo.inputAssemblyInfo.primitiveRestartEnable = VK_FALSE;
 
-	configInfo.viewport.x = 0.0f;
-	configInfo.viewport.y = 0.0f;
-	configInfo.viewport.width = static_cast<float>(width);
-	configInfo.viewport.height = static_cast<float>(height);
-	configInfo.viewport.minDepth = 0.0f;
-	configInfo.viewport.maxDepth = 1.0f;
-
-	configInfo.scissor.offset = { 0, 0 };
-	configInfo.scissor.extent = { width, height };
+	configInfo.viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+	configInfo.viewportInfo.viewportCount = 1;
+	configInfo.viewportInfo.pViewports = nullptr;
+	configInfo.viewportInfo.scissorCount = 1;
+	configInfo.viewportInfo.pScissors = nullptr;
 
 	configInfo.rasterizationInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 	configInfo.rasterizationInfo.depthClampEnable = VK_FALSE;
@@ -91,7 +85,12 @@ sve::PipelineConfigInfo sve::PipeLine::get_default_config(uint32_t width, uint32
 	configInfo.depthStencilInfo.front = {};  // Optional
 	configInfo.depthStencilInfo.back = {};   // Optional
 
-	return configInfo;
+	configInfo.dynamicStateEnables = { VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR };
+	configInfo.dynamicStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+	configInfo.dynamicStateInfo.pDynamicStates = configInfo.dynamicStateEnables.data();
+	configInfo.dynamicStateInfo.dynamicStateCount =
+		static_cast<uint32_t>(configInfo.dynamicStateEnables.size());
+	configInfo.dynamicStateInfo.flags = 0;
 }
 
 std::vector<char> sve::PipeLine::read_file(const std::string& filepath)
@@ -165,12 +164,6 @@ void sve::PipeLine::create_graphics_pipeline(const std::string& vert_shader_file
 	vertex_input_info.vertexAttributeDescriptionCount = static_cast<uint32_t> (attrib_decription.size());
 	vertex_input_info.pVertexAttributeDescriptions = attrib_decription.data(); // Optional
 
-	VkPipelineViewportStateCreateInfo viewport_info{};
-	viewport_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-	viewport_info.viewportCount = 1;
-	viewport_info.pViewports = &config.viewport;
-	viewport_info.scissorCount = 1;
-	viewport_info.pScissors = &config.scissor;
 
 	VkGraphicsPipelineCreateInfo pipeliene_info{};
 	pipeliene_info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -178,12 +171,12 @@ void sve::PipeLine::create_graphics_pipeline(const std::string& vert_shader_file
 	pipeliene_info.pStages = shader_stages;
 	pipeliene_info.pVertexInputState = &vertex_input_info;
 	pipeliene_info.pInputAssemblyState = &config.inputAssemblyInfo;
-	pipeliene_info.pViewportState = &viewport_info;
+	pipeliene_info.pViewportState = &config.viewportInfo;
 	pipeliene_info.pRasterizationState = &config.rasterizationInfo;
 	pipeliene_info.pMultisampleState = &config.multisampleInfo;
 	pipeliene_info.pDepthStencilState = &config.depthStencilInfo; // Optional
 	pipeliene_info.pColorBlendState = &config.colorBlendInfo;
-	pipeliene_info.pDynamicState = nullptr;
+	pipeliene_info.pDynamicState = &config.dynamicStateInfo;
 
 	pipeliene_info.layout = config.pipelineLayout;
 	pipeliene_info.renderPass = config.renderPass;

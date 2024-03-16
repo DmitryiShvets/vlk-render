@@ -11,8 +11,20 @@
 
 namespace sve {
 
-	SwapChain::SwapChain(Device& deviceRef, VkExtent2D extent)
-		: device{ deviceRef }, windowExtent{ extent } {
+	SwapChain::SwapChain(Device& deviceRef, VkExtent2D extent) : device{ deviceRef }, windowExtent{ extent } {
+		init();
+	}
+
+
+	SwapChain::SwapChain(Device& deviceRef, VkExtent2D windowExtent, std::shared_ptr<SwapChain> previous)
+		: device(deviceRef), windowExtent(windowExtent), old_swapschain(previous)
+	{
+		init();
+		old_swapschain = nullptr;
+	}
+
+	void SwapChain::init()
+	{
 		createSwapChain();
 		createImageViews();
 		createRenderPass();
@@ -20,6 +32,7 @@ namespace sve {
 		createFramebuffers();
 		createSyncObjects();
 	}
+
 
 	SwapChain::~SwapChain() {
 		for (auto imageView : swapChainImageViews) {
@@ -119,6 +132,7 @@ namespace sve {
 		return result;
 	}
 
+
 	void SwapChain::createSwapChain() {
 		SwapChainSupportDetails swapChainSupport = device.getSwapChainSupport();
 
@@ -163,7 +177,7 @@ namespace sve {
 		createInfo.presentMode = presentMode;
 		createInfo.clipped = VK_TRUE;
 
-		createInfo.oldSwapchain = VK_NULL_HANDLE;
+		createInfo.oldSwapchain = old_swapschain == nullptr ? VK_NULL_HANDLE : old_swapschain->swapChain;
 
 		if (vkCreateSwapchainKHR(device.device(), &createInfo, nullptr, &swapChain) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create swap chain!");
@@ -363,7 +377,7 @@ namespace sve {
 	VkSurfaceFormatKHR SwapChain::chooseSwapSurfaceFormat(
 		const std::vector<VkSurfaceFormatKHR>& availableFormats) {
 		for (const auto& availableFormat : availableFormats) {
-			if (availableFormat.format == VK_FORMAT_B8G8R8A8_UNORM &&
+			if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB &&
 				availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
 				return availableFormat;
 			}

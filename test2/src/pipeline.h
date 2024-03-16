@@ -7,14 +7,19 @@ namespace sve {
 
 	struct PipelineConfigInfo
 	{
-		VkViewport viewport;
-		VkRect2D scissor;
+		PipelineConfigInfo() = default;
+		PipelineConfigInfo(const PipelineConfigInfo&) = delete;
+		PipelineConfigInfo& operator=(const PipelineConfigInfo&) = delete;
+
+		VkPipelineViewportStateCreateInfo viewportInfo;
 		VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
 		VkPipelineRasterizationStateCreateInfo rasterizationInfo;
 		VkPipelineMultisampleStateCreateInfo multisampleInfo;
 		VkPipelineColorBlendAttachmentState colorBlendAttachment;
 		VkPipelineColorBlendStateCreateInfo colorBlendInfo;
 		VkPipelineDepthStencilStateCreateInfo depthStencilInfo;
+		std::vector<VkDynamicState> dynamicStateEnables;
+		VkPipelineDynamicStateCreateInfo dynamicStateInfo;
 		VkPipelineLayout pipelineLayout = nullptr;
 		VkRenderPass renderPass = nullptr;
 		uint32_t subpass = 0;
@@ -28,7 +33,7 @@ namespace sve {
 		void bind_buffer(VkCommandBuffer buffer);
 		PipeLine(const PipeLine&) = delete;
 		PipeLine& operator=(const PipeLine&) = delete;
-		static PipelineConfigInfo get_default_config(uint32_t width, uint32_t height);
+		static void set_default_config(PipelineConfigInfo& config);
 
 	private:
 		static std::vector<char> read_file(const std::string& filepath);
