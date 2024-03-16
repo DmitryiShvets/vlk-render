@@ -11,7 +11,7 @@ set(PROJ_SRC
 			 "src/device.cpp"
 			 "src/swap_chain.h"
 			 "src/swap_chain.cpp"
-)
+ "src/model.h" "src/model.cpp")
 
 add_executable (${PROJ_NAME} ${PROJ_SRC})
 

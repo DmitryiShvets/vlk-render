@@ -11,6 +11,7 @@ void sve::TestApp::run() {
 
 sve::TestApp::TestApp()
 {
+	load_models();
 	create_pipline_layout();
 	create_pipline();
 	create_command_buffer();
@@ -37,6 +38,17 @@ void sve::TestApp::draw_frame()
 	}
 }
 
+void sve::TestApp::load_models()
+{
+	std::vector<Model::Vertex> vertices{
+		{{0.0f, -0.5f}},
+		{{0.5f, 0.5f}},
+		{{-0.5f, 0.5f}}
+	};
+
+	m_model = std::make_unique<Model>(m_device, vertices);
+}
+
 void sve::TestApp::create_pipline_layout()
 {
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
@@ -57,7 +69,10 @@ void sve::TestApp::create_pipline()
 	auto pipeline_config = PipeLine::get_default_config(m_swap_chain.width(), m_swap_chain.height());
 	pipeline_config.renderPass = m_swap_chain.getRenderPass();
 	pipeline_config.pipelineLayout = m_pipeline_layout;
-	m_pipeline = std::make_unique<PipeLine>(m_device, pipeline_config, "../../../../test2/res/shaders/vert.spv", "../../../../test2/res/shaders/frag.spv");
+	m_pipeline = std::make_unique<PipeLine>(m_device,
+		pipeline_config,
+		"../../../../test2/res/shaders/v_test.vert.spv",
+		"../../../../test2/res/shaders/f_test.frag.spv");
 }
 
 
@@ -100,7 +115,8 @@ void sve::TestApp::create_command_buffer()
 
 		vkCmdBeginRenderPass(m_command_buffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 		m_pipeline->bind_buffer(m_command_buffers[i]);
-		vkCmdDraw(m_command_buffers[i], 3, 1, 0, 0);
+		m_model->bind(m_command_buffers[i]);
+		m_model->draw(m_command_buffers[i]);
 
 		vkCmdEndRenderPass(m_command_buffers[i]);
 
