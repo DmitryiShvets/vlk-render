@@ -13,9 +13,12 @@ set(PROJ_SRC
 			 "src/swap_chain.cpp"
 			 "src/model.h"
 			 "src/model.cpp"
-			 "src/game_object.h" "src/game_object.cpp")
+			 "src/game_object.h"
+			 "src/game_object.cpp"
+			 "src/renderer.h"
+ "src/renderer.cpp" "src/simple_render_system.h" "src/simple_render_system.cpp")
 
-add_executable (${PROJ_NAME} ${PROJ_SRC})
+add_executable (${PROJ_NAME} ${PROJ_SRC} )
 
 target_include_directories(${PROJ_NAME} PRIVATE src)
 find_package(Vulkan REQUIRED)

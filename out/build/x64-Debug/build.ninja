@@ -502,6 +502,22 @@ build test2\CMakeFiles\TEST_VLK_APP.dir\src\game_object.cpp.obj: CXX_COMPILER__T
   TARGET_COMPILE_PDB = test2\CMakeFiles\TEST_VLK_APP.dir\
   TARGET_PDB = test2\TEST_VLK_APP.pdb
 
+build test2\CMakeFiles\TEST_VLK_APP.dir\src\renderer.cpp.obj: CXX_COMPILER__TEST_VLK_APP_unscanned_Debug C$:\Users\Dmitry\vlk_test\test2\src\renderer.cpp || cmake_object_order_depends_target_TEST_VLK_APP
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++20
+  INCLUDES = -IC:\Users\Dmitry\vlk_test\test2\src -IC:\Users\Dmitry\vlk_test\glfw\include -IC:\Users\Dmitry\vlk_test\glm\glm\.. -external:IC:\Soft\VLK\Include -external:W0
+  OBJECT_DIR = test2\CMakeFiles\TEST_VLK_APP.dir
+  OBJECT_FILE_DIR = test2\CMakeFiles\TEST_VLK_APP.dir\src
+  TARGET_COMPILE_PDB = test2\CMakeFiles\TEST_VLK_APP.dir\
+  TARGET_PDB = test2\TEST_VLK_APP.pdb
+
+build test2\CMakeFiles\TEST_VLK_APP.dir\src\simple_render_system.cpp.obj: CXX_COMPILER__TEST_VLK_APP_unscanned_Debug C$:\Users\Dmitry\vlk_test\test2\src\simple_render_system.cpp || cmake_object_order_depends_target_TEST_VLK_APP
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++20
+  INCLUDES = -IC:\Users\Dmitry\vlk_test\test2\src -IC:\Users\Dmitry\vlk_test\glfw\include -IC:\Users\Dmitry\vlk_test\glm\glm\.. -external:IC:\Soft\VLK\Include -external:W0
+  OBJECT_DIR = test2\CMakeFiles\TEST_VLK_APP.dir
+  OBJECT_FILE_DIR = test2\CMakeFiles\TEST_VLK_APP.dir\src
+  TARGET_COMPILE_PDB = test2\CMakeFiles\TEST_VLK_APP.dir\
+  TARGET_PDB = test2\TEST_VLK_APP.pdb
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target TEST_VLK_APP
@@ -510,7 +526,7 @@ build test2\CMakeFiles\TEST_VLK_APP.dir\src\game_object.cpp.obj: CXX_COMPILER__T
 #############################################
 # Link the executable test2\TEST_VLK_APP.exe
 
-build test2\TEST_VLK_APP.exe: CXX_EXECUTABLE_LINKER__TEST_VLK_APP_Debug test2\CMakeFiles\TEST_VLK_APP.dir\main.cpp.obj test2\CMakeFiles\TEST_VLK_APP.dir\src\main_window.cpp.obj test2\CMakeFiles\TEST_VLK_APP.dir\src\vlk_app.cpp.obj test2\CMakeFiles\TEST_VLK_APP.dir\src\pipeline.cpp.obj test2\CMakeFiles\TEST_VLK_APP.dir\src\device.cpp.obj test2\CMakeFiles\TEST_VLK_APP.dir\src\swap_chain.cpp.obj test2\CMakeFiles\TEST_VLK_APP.dir\src\model.cpp.obj test2\CMakeFiles\TEST_VLK_APP.dir\src\game_object.cpp.obj | C$:\Soft\VLK\Lib\vulkan-1.lib glfw\src\glfw3.lib || glfw\src\glfw3.lib
+build test2\TEST_VLK_APP.exe: CXX_EXECUTABLE_LINKER__TEST_VLK_APP_Debug test2\CMakeFiles\TEST_VLK_APP.dir\main.cpp.obj test2\CMakeFiles\TEST_VLK_APP.dir\src\main_window.cpp.obj test2\CMakeFiles\TEST_VLK_APP.dir\src\vlk_app.cpp.obj test2\CMakeFiles\TEST_VLK_APP.dir\src\pipeline.cpp.obj test2\CMakeFiles\TEST_VLK_APP.dir\src\device.cpp.obj test2\CMakeFiles\TEST_VLK_APP.dir\src\swap_chain.cpp.obj test2\CMakeFiles\TEST_VLK_APP.dir\src\model.cpp.obj test2\CMakeFiles\TEST_VLK_APP.dir\src\game_object.cpp.obj test2\CMakeFiles\TEST_VLK_APP.dir\src\renderer.cpp.obj test2\CMakeFiles\TEST_VLK_APP.dir\src\simple_render_system.cpp.obj | C$:\Soft\VLK\Lib\vulkan-1.lib glfw\src\glfw3.lib || glfw\src\glfw3.lib
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1
   LINK_FLAGS = /machine:x64 /debug /INCREMENTAL /subsystem:console
   LINK_LIBRARIES = C:\Soft\VLK\Lib\vulkan-1.lib  glfw\src\glfw3.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib
