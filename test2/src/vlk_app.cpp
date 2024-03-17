@@ -2,7 +2,7 @@
 #include <stdexcept>
 #include <array>
 #include <cassert>
-
+#include <glm/gtc/constants.hpp>
 
 void sve::TestApp::run() {
 	while (!main_window.is_closing()) {
@@ -14,7 +14,7 @@ void sve::TestApp::run() {
 
 sve::TestApp::TestApp()
 {
-	load_models();
+	load_gameobjects();
 	create_pipline_layout();
 	recreate_swapchain();
 	create_command_buffer();
@@ -53,7 +53,7 @@ void sve::TestApp::draw_frame()
 	}
 }
 
-void sve::TestApp::load_models()
+void sve::TestApp::load_gameobjects()
 {
 	std::vector<Model::Vertex> vertices{
 	{{0.0f, -0.5f}, {1.0f, 1.0f, 1.0f}},
@@ -61,7 +61,17 @@ void sve::TestApp::load_models()
 	{{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
 	};
 
-	m_model = std::make_unique<Model>(m_device, vertices);
+	auto m_model = std::make_shared<Model>(m_device, vertices);
+
+	auto triangle = GameObject::create_gameobject();
+	triangle.model = m_model;
+	triangle.color = { 0.1f, 0.8f, 0.1f };
+	triangle.transform.translation.x = 0.2f;
+	triangle.transform.scale.y = 0.5f;
+	triangle.transform.scale.x = 2.5f;
+	triangle.transform.rotation = 0.25f * glm::two_pi<float>();
+
+	m_objects.push_back(std::move(triangle));
 }
 
 void sve::TestApp::create_pipline_layout()
@@ -120,6 +130,29 @@ void sve::TestApp::recreate_swapchain()
 		}
 	}
 	create_pipline();
+}
+
+void sve::TestApp::render_gameobject(VkCommandBuffer cmb_buff)
+{
+	m_pipeline->bind_buffer(cmb_buff);
+
+	for (auto& obj : m_objects) {
+		PushConstantData push_data{};
+		push_data.offset = obj.transform.translation;
+		push_data.color = obj.color;
+		push_data.transform = obj.transform.mat2();
+
+		vkCmdPushConstants(
+			cmb_buff,
+			m_pipeline_layout,
+			VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
+			0,
+			sizeof(PushConstantData),
+			&push_data);
+
+		obj.model->bind(cmb_buff);
+		obj.model->draw(cmb_buff);
+	}
 }
 
 void sve::TestApp::create_command_buffer()
@@ -187,26 +220,7 @@ void sve::TestApp::record_command_buffer(int image_index)
 	vkCmdSetViewport(m_command_buffers[image_index], 0, 1, &viewport);
 	vkCmdSetScissor(m_command_buffers[image_index], 0, 1, &scissor);
 
-	m_pipeline->bind_buffer(m_command_buffers[image_index]);
-	m_model->bind(m_command_buffers[image_index]);
-
-	for (int j = 0; j < 4; j++)
-	{
-		PushConstantData constant{};
-		constant.offset = { 0.0f, -0.4f + j * 0.25f };
-		constant.color = { 0.0f, 0.0f, 0.2f + j * 0.2f };
-
-		vkCmdPushConstants(
-			m_command_buffers[image_index],
-			m_pipeline_layout,
-			VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
-			0,
-			sizeof(PushConstantData),
-			&constant);
-
-		m_model->draw(m_command_buffers[image_index]);
-	}
-
+	render_gameobject(m_command_buffers[image_index]);
 
 	vkCmdEndRenderPass(m_command_buffers[image_index]);
 
