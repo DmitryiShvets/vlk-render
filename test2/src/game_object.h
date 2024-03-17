@@ -8,7 +8,7 @@ namespace sve {
 	{
 		glm::vec2 translation{ 0.0f,0.0f };
 		glm::vec2 scale{ 1.f,1.f };
-		float rotation;
+		float rotation{0};
 
 		glm::mat2 mat2() {
 			const float s = glm::sin(rotation);

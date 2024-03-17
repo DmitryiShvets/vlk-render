@@ -64,11 +64,17 @@ namespace sve {
 		void copyBufferToImage(
 			VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layerCount);
 
-		void createImageWithInfo(
+		void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
+
+		void createImage(
 			const VkImageCreateInfo& imageInfo,
 			VkMemoryPropertyFlags properties,
 			VkImage& image,
 			VkDeviceMemory& imageMemory);
+
+		VkImageView createImageView(VkImage image, VkFormat format);
+
+		void createTextureSampler(VkSampler& textureSampler);
 
 		VkPhysicalDeviceProperties properties;
 

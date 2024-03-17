@@ -16,7 +16,11 @@ set(PROJ_SRC
 			 "src/game_object.h"
 			 "src/game_object.cpp"
 			 "src/renderer.h"
- "src/renderer.cpp" "src/simple_render_system.h" "src/simple_render_system.cpp")
+ "src/renderer.cpp" 
+ "src/simple_render_system.h"
+ "src/simple_render_system.cpp"
+ "src/stb_image.h"
+ "src/texture.h" "src/texture.cpp")
 
 add_executable (${PROJ_NAME} ${PROJ_SRC} )
 
@@ -24,4 +28,3 @@ target_include_directories(${PROJ_NAME} PRIVATE src)
 find_package(Vulkan REQUIRED)
 
 target_link_libraries(${PROJ_NAME} PRIVATE Vulkan::Vulkan glfw glm)
-
