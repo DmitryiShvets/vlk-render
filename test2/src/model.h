@@ -17,7 +17,13 @@ namespace sve {
 			static std::vector<VkVertexInputAttributeDescription> get_attribute_description();
 		};
 
-		Model(Device& device, const std::vector<Vertex>& vertices);
+		struct Builder
+		{
+			std::vector<Vertex> vertices{};
+			std::vector<uint32_t> indices{};
+		};
+
+		Model(Device& device, const Builder& builder);
 		~Model();
 
 		void bind(VkCommandBuffer cmb_buff);
@@ -27,11 +33,18 @@ namespace sve {
 		Model& operator=(const Model&) = delete;
 	private:
 		void create_vertex_buffer(const std::vector<Vertex>& vertices);
+		void create_index_buffer(const std::vector<uint32_t>& indices);
 
 		Device& m_device;
 		VkBuffer vertex_buffer;
 		VkDeviceMemory vertex_memory;
 		uint32_t vertex_count;
+
+		VkBuffer index_buffer;
+		VkDeviceMemory index_memory;
+		uint32_t index_count;
+
+		bool has_indexbuffer = false;
 	};
 
 }
