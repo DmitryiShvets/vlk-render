@@ -12,6 +12,7 @@ namespace sve {
 		Renderer(MainWindow& window, Device& device);
 		~Renderer();
 		VkRenderPass get_swapchain_renderpass() const { return m_swapchain->getRenderPass(); };
+		float get_aspectratio() const { return m_swapchain->extentAspectRatio(); };
 		bool is_frame_in_progress() const { return is_frame_started; };
 		VkCommandBuffer get_cur_command_buffer() const {
 			assert(is_frame_started && "Cannot get command when frame in progress!");

@@ -61,7 +61,7 @@ void sve::SimpleRenderSystem::create_pipline(VkRenderPass render_pass)
 
 
 
-void sve::SimpleRenderSystem::render_gameobjects(VkCommandBuffer cmb_buff, std::vector<GameObject>& objects)
+void sve::SimpleRenderSystem::render_gameobjects(VkCommandBuffer cmb_buff, std::vector<GameObject>& objects, const Camera& camera)
 {
 	m_pipeline->bind_buffer(cmb_buff);
 
@@ -71,7 +71,7 @@ void sve::SimpleRenderSystem::render_gameobjects(VkCommandBuffer cmb_buff, std::
 
 		PushConstantData push_data{};
 		push_data.color = obj.color;
-		push_data.transform = obj.transform.mat4();
+		push_data.transform = camera.getProjection() * obj.transform.mat4();
 
 		vkCmdPushConstants(
 			cmb_buff,

@@ -1,16 +1,22 @@
 #include "vlk_app.h"
 #include "simple_render_system.h"
 #include <glm/gtc/constants.hpp>
+#include "camera.h"
 
 void sve::TestApp::run() {
 	SimpleRenderSystem render_system{ m_device,m_renderer.get_swapchain_renderpass() };
-
+	Camera camera{};
+	float aspect;
 	while (!main_window.is_closing()) {
 		glfwPollEvents();
 
+		aspect = m_renderer.get_aspectratio();
+		//camera.setOrthographicProjection(-aspect, aspect, -1, 1, -1, 1);
+		camera.setPerspectiveProjection(glm::radians(50.f), aspect, 0.1f, 10.f);
+
 		if (auto cmb_buff = m_renderer.start_frame()) {
 			m_renderer.strart_swapchain_renderpass(cmb_buff);
-			render_system.render_gameobjects(cmb_buff, m_objects);
+			render_system.render_gameobjects(cmb_buff, m_objects, camera);
 			m_renderer.end_swapchain_renderpass(cmb_buff);
 			m_renderer.end_frame();
 		}
@@ -57,7 +63,7 @@ void sve::TestApp::load_gameobjects()
 	std::shared_ptr<Model> lveModel = createCubeModel(m_device, { .0f, .0f, .0f });
 	auto cube = GameObject::create_gameobject();
 	cube.model = lveModel;
-	cube.transform.translation = { .0f, .0f, .5f };
+	cube.transform.translation = { .0f, .0f, 2.5f };
 	cube.transform.scale = { .5f, .5f, .5f };
 	m_objects.push_back(std::move(cube));
 }
