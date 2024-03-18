@@ -58,6 +58,7 @@ sve::TestApp::~TestApp()
 
 void sve::TestApp::load_gameobjects()
 {
+	///--------------2 квадрата-------------
 	//std::vector<Model::Vertex> vertices{
 	//{{-0.5f, -0.5f,0.0f}, {1.0f, 1.0f, 1.0f}},
 	//{{-0.5f, 0.5f,0.0f}, {0.0f, 1.0f, 0.0f}},
@@ -82,10 +83,22 @@ void sve::TestApp::load_gameobjects()
 	//m_objects.push_back(std::move(triangle));
 	//m_objects.push_back(std::move(triangle1));
 
-	std::shared_ptr<Model> lveModel = createCubeModel(m_device, { .0f, .0f, .0f });
+
+	///--------------куб-------------
+	//std::shared_ptr<Model> lveModel = createCubeModel(m_device, { .0f, .0f, .0f });
+	//auto cube = GameObject::create_gameobject();
+	//cube.model = lveModel;
+	//cube.transform.translation = { .0f, .0f, 2.5f };
+	//cube.transform.scale = { .5f, .5f, .5f };
+	//m_objects.push_back(std::move(cube));
+
+	///--------------ваза-------------
+	//std::shared_ptr<Model> lveModel = Model::create_model_fromfile(m_device, "../../../../test2/res/models/colored_cube.obj");
+	std::shared_ptr<Model> lveModel = Model::create_model_fromfile(m_device, "../../../../test2/res/models/smooth_vase.obj");
 	auto cube = GameObject::create_gameobject();
 	cube.model = lveModel;
 	cube.transform.translation = { .0f, .0f, 2.5f };
-	cube.transform.scale = { .5f, .5f, .5f };
+	cube.transform.scale = { 3.0f,3.0f,3.0f };
 	m_objects.push_back(std::move(cube));
+
 }

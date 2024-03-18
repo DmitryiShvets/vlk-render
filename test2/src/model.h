@@ -1,8 +1,12 @@
 #pragma once
 #include "device.h"
+
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
+
+#include <memory>
+
 namespace sve {
 
 	class Model {
@@ -12,16 +16,27 @@ namespace sve {
 		{
 			glm::vec3 position;
 			glm::vec3 color;
+			glm::vec3 normal;
+			glm::vec2 uv;
 
 			static std::vector<VkVertexInputBindingDescription> get_binding_description();
 			static std::vector<VkVertexInputAttributeDescription> get_attribute_description();
+
+			bool operator==(const Vertex& other) const {
+				return position == other.position && color == other.color && normal == other.normal &&
+					uv == other.uv;
+			}
 		};
 
 		struct Builder
 		{
 			std::vector<Vertex> vertices{};
 			std::vector<uint32_t> indices{};
+
+			void load_model(const std::string& file);	
 		};
+
+		static std::unique_ptr<Model> create_model_fromfile( Device& device,const std::string& file);
 
 		Model(Device& device, const Builder& builder);
 		~Model();

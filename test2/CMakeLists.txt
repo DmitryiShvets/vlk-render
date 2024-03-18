@@ -20,7 +20,14 @@ set(PROJ_SRC
  "src/simple_render_system.h"
  "src/simple_render_system.cpp"
  "src/stb_image.h"
- "src/texture.h" "src/texture.cpp" "src/camera.h" "src/camera.cpp" "src/user_input_controller.h" "src/user_input_controller.cpp")
+ "src/texture.h"
+ "src/texture.cpp"
+ "src/camera.h" 
+ "src/camera.cpp" 
+ "src/user_input_controller.h"
+ "src/user_input_controller.cpp"
+ "src/tiny_obj_loader.h"
+ "src/utils.h")
 
 add_executable (${PROJ_NAME} ${PROJ_SRC} )
 
