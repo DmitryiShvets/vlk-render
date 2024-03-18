@@ -66,8 +66,8 @@ void sve::SimpleRenderSystem::render_gameobjects(VkCommandBuffer cmb_buff, std::
 	m_pipeline->bind_buffer(cmb_buff);
 
 	for (auto& obj : objects) {
-		obj.transform.rotation.y = glm::mod(obj.transform.rotation.y + 0.01f, glm::two_pi<float>());
-		obj.transform.rotation.x = glm::mod(obj.transform.rotation.x + 0.005f, glm::two_pi<float>());
+		//obj.transform.rotation.y = glm::mod(obj.transform.rotation.y + 0.01f, glm::two_pi<float>());
+		//obj.transform.rotation.x = glm::mod(obj.transform.rotation.x + 0.005f, glm::two_pi<float>());
 
 		auto projectionView = camera.getProjection() * camera.getView();
 

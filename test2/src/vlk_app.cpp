@@ -1,16 +1,36 @@
 #include "vlk_app.h"
 #include "simple_render_system.h"
-#include <glm/gtc/constants.hpp>
 #include "camera.h"
+#include "user_input_controller.h"
+
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/glm.hpp>
+#include <glm/gtc/constants.hpp>
+
+#include <chrono>
 
 void sve::TestApp::run() {
 	SimpleRenderSystem render_system{ m_device,m_renderer.get_swapchain_renderpass() };
 	Camera camera{};
-	//camera.setViewDirection(glm::vec3(0.f), glm::vec3(0.5f, 0.f, 1.f));
-	camera.setViewTarget(glm::vec3(-1.f, -2.f, -2.f), glm::vec3(0.f, 0.f, 2.5f));
 	float aspect;
+	//camera.setViewDirection(glm::vec3(0.f), glm::vec3(0.5f, 0.f, 1.f));
+	//camera.setViewTarget(glm::vec3(-1.f, -2.f, -2.f), glm::vec3(0.f, 0.f, 2.5f));
+
+	auto camera_object = GameObject::create_gameobject();
+	KeyboardMovementController camera_controller{};
+
+	auto curr_time = std::chrono::high_resolution_clock::now();
+
 	while (!main_window.is_closing()) {
 		glfwPollEvents();
+
+		auto new_time = std::chrono::high_resolution_clock::now();
+		float duration_frame = std::chrono::duration<float, std::chrono::seconds::period>(new_time - curr_time).count();
+		curr_time = new_time;
+
+		camera_controller.moveInPlaneXZ(main_window.get_window_decrtiptor(), duration_frame, camera_object);
+		camera.setViewYXZ(camera_object.transform.translation, camera_object.transform.rotation);
 
 		aspect = m_renderer.get_aspectratio();
 		//camera.setOrthographicProjection(-aspect, aspect, -1, 1, -1, 1);

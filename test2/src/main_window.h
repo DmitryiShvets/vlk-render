@@ -16,6 +16,7 @@ namespace sve {
 		MainWindow& operator=(const MainWindow&) = delete;
 		bool is_closing() { return glfwWindowShouldClose(m_window); }
 		VkExtent2D get_extent() { return VkExtent2D{ width,height }; }
+		GLFWwindow* get_window_decrtiptor() const { return m_window; }
 	private:
 
 		void init();
