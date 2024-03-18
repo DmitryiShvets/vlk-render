@@ -94,11 +94,18 @@ void sve::TestApp::load_gameobjects()
 
 	///--------------ваза-------------
 	//std::shared_ptr<Model> lveModel = Model::create_model_fromfile(m_device, "../../../../test2/res/models/colored_cube.obj");
-	std::shared_ptr<Model> lveModel = Model::create_model_fromfile(m_device, "../../../../test2/res/models/smooth_vase.obj");
-	auto cube = GameObject::create_gameobject();
-	cube.model = lveModel;
-	cube.transform.translation = { .0f, .0f, 2.5f };
-	cube.transform.scale = { 3.0f,3.0f,3.0f };
-	m_objects.push_back(std::move(cube));
+	std::shared_ptr<Model> flat_mesh = Model::create_model_fromfile(m_device, "../../../../test2/res/models/flat_vase.obj");
+	auto flat = GameObject::create_gameobject();
+	flat.model = flat_mesh;
+	flat.transform.translation = { -.5f, .5f, 2.5f };
+	flat.transform.scale = { 3.0f,2.0f,3.0f };
+	m_objects.push_back(std::move(flat));
+
+	std::shared_ptr<Model> smooth_mesh = Model::create_model_fromfile(m_device, "../../../../test2/res/models/smooth_vase.obj");
+	auto smooth = GameObject::create_gameobject();
+	smooth.model = smooth_mesh;
+	smooth.transform.translation = { .5f, .5f, 2.5f };
+	smooth.transform.scale = { 3.0f,2.0f,3.0f };
+	m_objects.push_back(std::move(smooth));
 
 }

@@ -6,7 +6,7 @@
 struct PushConstantData
 {
 	glm::mat4 transform{ 1.0f };
-	alignas(16) glm::vec3 color;
+	glm::mat4 normalMatrix{ 1.f };
 };
 
 
@@ -72,8 +72,10 @@ void sve::SimpleRenderSystem::render_gameobjects(VkCommandBuffer cmb_buff, std::
 		auto projectionView = camera.getProjection() * camera.getView();
 
 		PushConstantData push_data{};
-		push_data.color = obj.color;
-		push_data.transform = projectionView * obj.transform.mat4();
+		auto modelMatrix = obj.transform.mat4();
+		push_data.transform = projectionView * modelMatrix;
+		//push_data.normalMatrix = modelMatrix;
+		push_data.normalMatrix = obj.transform.normal_matrix();
 
 		vkCmdPushConstants(
 			cmb_buff,
