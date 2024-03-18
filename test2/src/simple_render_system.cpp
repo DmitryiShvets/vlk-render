@@ -69,9 +69,11 @@ void sve::SimpleRenderSystem::render_gameobjects(VkCommandBuffer cmb_buff, std::
 		obj.transform.rotation.y = glm::mod(obj.transform.rotation.y + 0.01f, glm::two_pi<float>());
 		obj.transform.rotation.x = glm::mod(obj.transform.rotation.x + 0.005f, glm::two_pi<float>());
 
+		auto projectionView = camera.getProjection() * camera.getView();
+
 		PushConstantData push_data{};
 		push_data.color = obj.color;
-		push_data.transform = camera.getProjection() * obj.transform.mat4();
+		push_data.transform = projectionView * obj.transform.mat4();
 
 		vkCmdPushConstants(
 			cmb_buff,
