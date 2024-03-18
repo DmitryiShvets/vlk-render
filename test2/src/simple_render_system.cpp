@@ -2,11 +2,10 @@
 
 #include <stdexcept>
 #include <cassert>
-
+#include <glm/gtc/constants.hpp>
 struct PushConstantData
 {
-	glm::mat2 transform{ 1.0f };
-	glm::vec2 offset;
+	glm::mat4 transform{ 1.0f };
 	alignas(16) glm::vec3 color;
 };
 
@@ -67,10 +66,12 @@ void sve::SimpleRenderSystem::render_gameobjects(VkCommandBuffer cmb_buff, std::
 	m_pipeline->bind_buffer(cmb_buff);
 
 	for (auto& obj : objects) {
+		obj.transform.rotation.y = glm::mod(obj.transform.rotation.y + 0.01f, glm::two_pi<float>());
+		obj.transform.rotation.x = glm::mod(obj.transform.rotation.x + 0.005f, glm::two_pi<float>());
+
 		PushConstantData push_data{};
-		push_data.offset = obj.transform.translation;
 		push_data.color = obj.color;
-		push_data.transform = obj.transform.mat2();
+		push_data.transform = obj.transform.mat4();
 
 		vkCmdPushConstants(
 			cmb_buff,

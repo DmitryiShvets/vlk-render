@@ -59,8 +59,8 @@ std::vector<VkVertexInputAttributeDescription> sve::Model::Vertex::get_attribute
 	std::vector<VkVertexInputAttributeDescription> attrib_decription(2);
 	attrib_decription[0].binding = 0;
 	attrib_decription[0].location = 0;
-	attrib_decription[0].offset = offsetof(Vertex, pos);
-	attrib_decription[0].format = VK_FORMAT_R32G32_SFLOAT;
+	attrib_decription[0].offset = offsetof(Vertex, position);
+	attrib_decription[0].format = VK_FORMAT_R32G32B32_SFLOAT;
 
 	attrib_decription[1].binding = 0;
 	attrib_decription[1].location = 1;

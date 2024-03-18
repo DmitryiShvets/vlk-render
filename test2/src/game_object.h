@@ -4,26 +4,13 @@
 
 namespace sve {
 
-	struct Transform2D
+	struct Transform
 	{
-		glm::vec2 translation{ 0.0f,0.0f };
-		glm::vec2 scale{ 1.f,1.f };
-		float rotation{0};
+		glm::vec3 translation{ 0.0f,0.0f,0.0f };
+		glm::vec3 scale{ 1.0f,1.0f, 1.0f };
+		glm::vec3 rotation{ 0.0f,0.0f,0.0f };
 
-		glm::mat2 mat2() {
-			const float s = glm::sin(rotation);
-			const float c = glm::cos(rotation);
-			glm::mat2 rot_mat{
-				{c,s},
-				{-s, c}
-			};
-
-			glm::mat2 scale_mat{
-				{scale.x,0.0f},
-				{0.0f, scale.y}
-			};
-			return rot_mat * scale_mat;
-		};
+		glm::mat4 mat4();;
 	};
 
 	class GameObject {
@@ -43,7 +30,7 @@ namespace sve {
 		id_t get_id() const {
 			return id_obj;
 		}
-		Transform2D transform;
+		Transform transform;
 		std::shared_ptr<Model> model{};
 		glm::vec3 color;
 

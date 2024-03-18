@@ -30,30 +30,34 @@ sve::TestApp::~TestApp()
 
 void sve::TestApp::load_gameobjects()
 {
-	std::vector<Model::Vertex> vertices{
-	{{-0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}},
-	{{-0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
-	{{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
-	{{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
-	{{0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}},
-	{ { -0.5f, -0.5f }, {1.0f, 1.0f, 1.0f} }
-	};
+	//std::vector<Model::Vertex> vertices{
+	//{{-0.5f, -0.5f,0.0f}, {1.0f, 1.0f, 1.0f}},
+	//{{-0.5f, 0.5f,0.0f}, {0.0f, 1.0f, 0.0f}},
+	//{{0.5f, 0.5f,0.0f}, {0.0f, 1.0f, 0.0f}},
+	//{{0.5f, 0.5f,0.0f}, {0.0f, 1.0f, 0.0f}},
+	//{{0.5f, -0.5f,0.0f}, {0.0f, 0.0f, 1.0f}},
+	//{ { -0.5f, -0.5f,0.0f }, {1.0f, 1.0f, 1.0f} }
+	//};
 
-	auto m_model = std::make_shared<Model>(m_device, vertices);
+	//auto m_model = std::make_shared<Model>(m_device, vertices);
 
-	auto triangle = GameObject::create_gameobject();
-	triangle.model = m_model;
-	triangle.color = { 0.0f, 0.0f, 0.0f };
-	triangle.transform.translation.x = 0.5f;
-	//triangle.transform.scale.y = 0.5f;
-	//triangle.transform.scale.x = 2.5f;
-	//triangle.transform.rotation = 0.25f * glm::two_pi<float>();
+	//auto triangle = GameObject::create_gameobject();
+	//triangle.model = m_model;
+	//triangle.color = { 0.0f, 0.0f, 0.0f };
+	//triangle.transform.translation.x = 0.5f;
 
-	auto triangle1 = GameObject::create_gameobject();
-	triangle1.transform.translation.x = -0.5f;
-	triangle1.model = m_model;
-	triangle1.color = { 1.0f, 1.0f, 1.0f };
+	//auto triangle1 = GameObject::create_gameobject();
+	//triangle1.transform.translation.x = -0.5f;
+	//triangle1.model = m_model;
+	//triangle1.color = { 1.0f, 1.0f, 1.0f };
 
-	m_objects.push_back(std::move(triangle));
-	m_objects.push_back(std::move(triangle1));
+	//m_objects.push_back(std::move(triangle));
+	//m_objects.push_back(std::move(triangle1));
+
+	std::shared_ptr<Model> lveModel = createCubeModel(m_device, { .0f, .0f, .0f });
+	auto cube = GameObject::create_gameobject();
+	cube.model = lveModel;
+	cube.transform.translation = { .0f, .0f, .5f };
+	cube.transform.scale = { .5f, .5f, .5f };
+	m_objects.push_back(std::move(cube));
 }
