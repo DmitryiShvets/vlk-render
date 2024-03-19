@@ -6,7 +6,7 @@
 struct PushConstantData
 {
 	glm::mat4 modelMatrix{ 1.0f };
-	glm::mat4 normalMatrix{ 1.f };
+	int index;
 };
 
 
@@ -86,7 +86,8 @@ void sve::SimpleRenderSystem::render_gameobjects(FrameInfo& frame_info, std::vec
 		PushConstantData push_data{};
 
 		push_data.modelMatrix = obj.transform.model_matrix();
-		push_data.normalMatrix = obj.transform.normal_matrix();
+		//push_data.normalMatrix = obj.transform.normal_matrix();
+		push_data.index = obj.get_id();
 
 		vkCmdPushConstants(
 			frame_info.commandBuffer,

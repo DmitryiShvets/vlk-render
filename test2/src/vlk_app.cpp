@@ -35,18 +35,35 @@ void sve::TestApp::run() {
 
 	auto g_set_layout = DescriptorSetLayout::Builder(m_device)
 		.addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
-		.addBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
+		.addBinding(1, VK_DESCRIPTOR_TYPE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
+		.addBinding(2, VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, VK_SHADER_STAGE_FRAGMENT_BIT,2)
 		.build();
 
 	std::vector<VkDescriptorSet> g_descriptor_sets(SwapChain::MAX_FRAMES_IN_FLIGHT);
 	Texture texture(m_device, "../../../../test2/res/textures/texture.jpg");
 	Texture texture1(m_device, "../../../../test2/res/textures/awesomeface.png");
+	//Texture texture2(m_device, "../../../../test2/res/textures/skull.jpg");
+
+
+	VkSampler sampler{};
+	m_device.createTextureSampler(sampler);
+	VkDescriptorImageInfo samplerInfo = {};
+	samplerInfo.sampler = sampler;
+
+	VkDescriptorImageInfo			descriptorImageInfos[2];
+	descriptorImageInfos[0].sampler = nullptr;
+	descriptorImageInfos[0].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+	descriptorImageInfos[0].imageView = texture.imageInfo.imageView;
+	descriptorImageInfos[1].sampler = nullptr;
+	descriptorImageInfos[1].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+	descriptorImageInfos[1].imageView = texture1.imageInfo.imageView;
 
 	for (int i = 0; i < g_descriptor_sets.size(); i++) {
 		auto bufferInfo = uboBuffers[i]->descriptorInfo();
 		DescriptorWriter(*g_set_layout, *g_set_pool)
 			.writeBuffer(0, &bufferInfo)
-			.writeImage(1, &texture.imageInfo)
+			.writeImage(1, &samplerInfo)
+			.writeImage(2, descriptorImageInfos)
 			.build(g_descriptor_sets[i]);
 	}
 
@@ -98,15 +115,17 @@ void sve::TestApp::run() {
 		}
 	}
 	vkDeviceWaitIdle(m_device.device());
+	vkDestroySampler(m_device.device(), sampler, nullptr);
 }
 
 sve::TestApp::TestApp()
 {
 	g_set_pool =
 		DescriptorPool::Builder(m_device)
-		.setMaxSets(SwapChain::MAX_FRAMES_IN_FLIGHT)
+		.setMaxSets(2)
 		.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, SwapChain::MAX_FRAMES_IN_FLIGHT)
-		.addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, SwapChain::MAX_FRAMES_IN_FLIGHT)
+		.addPoolSize(VK_DESCRIPTOR_TYPE_SAMPLER, SwapChain::MAX_FRAMES_IN_FLIGHT)
+		.addPoolSize(VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, SwapChain::MAX_FRAMES_IN_FLIGHT*2)
 		.build();
 
 	load_gameobjects();
@@ -162,7 +181,7 @@ void sve::TestApp::load_gameobjects()
 	//auto flat = GameObject::create_gameobject();
 	//flat.model = flat_mesh;
 	//flat.transform.translation = { -.5f, .5f, 2.5f };
-	//flat.transform.scale = { 1.0f,1.0f,1.0f };
+	//flat.transform.scale = { 0.001f,0.001f,0.001f };
 	//m_objects.push_back(std::move(flat));
 	//std::shared_ptr<Model> smooth_mesh = Model::create_model_fromfile(m_device, "../../../../test2/res/models/smooth_vase.obj");
 	//auto smooth = GameObject::create_gameobject();
