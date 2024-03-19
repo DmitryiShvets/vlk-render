@@ -2,6 +2,7 @@
 #include "simple_render_system.h"
 #include "camera.h"
 #include "user_input_controller.h"
+#include "buffer.h"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -10,7 +11,27 @@
 
 #include <chrono>
 
+namespace sve {
+	struct GlobalUBO
+	{
+		glm::mat4 proj_matrix{ 1.0f };
+		glm::vec3 light_direction = glm::normalize(glm::vec3{ 1.0f,-3.0f,-1.0f });
+	};
+}
+
 void sve::TestApp::run() {
+
+	std::vector<std::unique_ptr<DataBuffer>> uboBuffers(SwapChain::MAX_FRAMES_IN_FLIGHT);
+	for (int i = 0; i < uboBuffers.size(); i++) {
+		uboBuffers[i] = std::make_unique<DataBuffer>(
+			m_device,
+			sizeof(GlobalUBO),
+			1,
+			VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+		uboBuffers[i]->map();
+	}
+
 	SimpleRenderSystem render_system{ m_device,m_renderer.get_swapchain_renderpass() };
 	Camera camera{};
 	float aspect;
@@ -26,10 +47,10 @@ void sve::TestApp::run() {
 		glfwPollEvents();
 
 		auto new_time = std::chrono::high_resolution_clock::now();
-		float duration_frame = std::chrono::duration<float, std::chrono::seconds::period>(new_time - curr_time).count();
+		float frame_time = std::chrono::duration<float, std::chrono::seconds::period>(new_time - curr_time).count();
 		curr_time = new_time;
 
-		camera_controller.moveInPlaneXZ(main_window.get_window_decrtiptor(), duration_frame, camera_object);
+		camera_controller.moveInPlaneXZ(main_window.get_window_decrtiptor(), frame_time, camera_object);
 		camera.setViewYXZ(camera_object.transform.translation, camera_object.transform.rotation);
 
 		aspect = m_renderer.get_aspectratio();
@@ -37,8 +58,22 @@ void sve::TestApp::run() {
 		camera.setPerspectiveProjection(glm::radians(50.f), aspect, 0.1f, 10.f);
 
 		if (auto cmb_buff = m_renderer.start_frame()) {
+		
+			int frame_index = m_renderer.get_frame_index();
+			FrameInfo frame_info{
+				frame_index,
+				frame_time,
+				cmb_buff,
+				camera
+			};
+
+			GlobalUBO ubo{};
+			ubo.proj_matrix = camera.getProjection() * camera.getView();
+			uboBuffers[frame_index]->writeToBuffer(&ubo);
+			uboBuffers[frame_index]->flush();
+
 			m_renderer.strart_swapchain_renderpass(cmb_buff);
-			render_system.render_gameobjects(cmb_buff, m_objects, camera);
+			render_system.render_gameobjects(frame_info, m_objects);
 			m_renderer.end_swapchain_renderpass(cmb_buff);
 			m_renderer.end_frame();
 		}

@@ -1,5 +1,6 @@
 #pragma once
 #include "device.h"
+#include "buffer.h"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -51,12 +52,11 @@ namespace sve {
 		void create_index_buffer(const std::vector<uint32_t>& indices);
 
 		Device& m_device;
-		VkBuffer vertex_buffer;
-		VkDeviceMemory vertex_memory;
+
+		std::unique_ptr<DataBuffer> vertex_buffer;
 		uint32_t vertex_count;
 
-		VkBuffer index_buffer;
-		VkDeviceMemory index_memory;
+		std::unique_ptr<DataBuffer> index_buffer;
 		uint32_t index_count;
 
 		bool has_indexbuffer = false;

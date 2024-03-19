@@ -27,7 +27,10 @@ set(PROJ_SRC
  "src/user_input_controller.h"
  "src/user_input_controller.cpp"
  "src/tiny_obj_loader.h"
- "src/utils.h")
+ "src/utils.h"
+ "src/buffer.h"
+ "src/buffer.cpp"
+ "src/frame_info.h")
 
 add_executable (${PROJ_NAME} ${PROJ_SRC} )
 

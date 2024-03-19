@@ -2,6 +2,7 @@
 #include "camera.h"
 #include "pipeline.h"
 #include "game_object.h"
+#include "frame_info.h"
 
 namespace sve {
 
@@ -14,7 +15,7 @@ namespace sve {
 		SimpleRenderSystem(const SimpleRenderSystem&) = delete;
 		SimpleRenderSystem& operator=(const SimpleRenderSystem&) = delete;
 
-		void render_gameobjects(VkCommandBuffer cmb_buff, std::vector<GameObject>& objects, const Camera& camera);
+		void render_gameobjects(FrameInfo& frame_info, std::vector<GameObject>& objects);
 
 	private:
 		void create_pipline_layout();

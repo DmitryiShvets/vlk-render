@@ -61,15 +61,15 @@ void sve::SimpleRenderSystem::create_pipline(VkRenderPass render_pass)
 
 
 
-void sve::SimpleRenderSystem::render_gameobjects(VkCommandBuffer cmb_buff, std::vector<GameObject>& objects, const Camera& camera)
+void sve::SimpleRenderSystem::render_gameobjects(FrameInfo& frame_info, std::vector<GameObject>& objects)
 {
-	m_pipeline->bind_buffer(cmb_buff);
+	m_pipeline->bind_buffer(frame_info.commandBuffer);
 
 	for (auto& obj : objects) {
 		//obj.transform.rotation.y = glm::mod(obj.transform.rotation.y + 0.01f, glm::two_pi<float>());
 		//obj.transform.rotation.x = glm::mod(obj.transform.rotation.x + 0.005f, glm::two_pi<float>());
 
-		auto projectionView = camera.getProjection() * camera.getView();
+		auto projectionView = frame_info.camera.getProjection() * frame_info.camera.getView();
 
 		PushConstantData push_data{};
 		auto modelMatrix = obj.transform.mat4();
@@ -78,14 +78,14 @@ void sve::SimpleRenderSystem::render_gameobjects(VkCommandBuffer cmb_buff, std::
 		push_data.normalMatrix = obj.transform.normal_matrix();
 
 		vkCmdPushConstants(
-			cmb_buff,
+			frame_info.commandBuffer,
 			m_pipeline_layout,
 			VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
 			0,
 			sizeof(PushConstantData),
 			&push_data);
 
-		obj.model->bind(cmb_buff);
-		obj.model->draw(cmb_buff);
+		obj.model->bind(frame_info.commandBuffer);
+		obj.model->draw(frame_info.commandBuffer);
 	}
 }
