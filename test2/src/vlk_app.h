@@ -2,6 +2,8 @@
 #include "main_window.h"
 #include "renderer.h"
 #include "game_object.h"
+#include "descriptor_set.h"
+
 #include <memory>
 namespace sve {
 
@@ -73,6 +75,7 @@ namespace sve {
 		Device m_device{ main_window };
 		Renderer m_renderer{ main_window,m_device };
 
+        std::unique_ptr<DescriptorPool> g_descriptor_pool{};
 		std::vector<GameObject> m_objects;
 	};
 

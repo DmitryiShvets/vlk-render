@@ -15,7 +15,7 @@ namespace sve {
 	struct GlobalUBO
 	{
 		glm::mat4 proj_matrix{ 1.0f };
-		glm::vec3 light_direction = glm::normalize(glm::vec3{ 1.0f,-3.0f,-1.0f });
+		glm::vec3 light_direction = glm::normalize(glm::vec3{ -1.0f,-3.0f,-1.0f });
 	};
 }
 
@@ -32,7 +32,20 @@ void sve::TestApp::run() {
 		uboBuffers[i]->map();
 	}
 
-	SimpleRenderSystem render_system{ m_device,m_renderer.get_swapchain_renderpass() };
+	auto g_set_layout = DescriptorSetLayout::Builder(m_device)
+		.addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
+		.build();
+
+	std::vector<VkDescriptorSet> g_descriptor_sets(SwapChain::MAX_FRAMES_IN_FLIGHT);
+
+	for (int i = 0; i < g_descriptor_sets.size(); i++) {
+		auto bufferInfo = uboBuffers[i]->descriptorInfo();
+		DescriptorWriter(*g_set_layout, *g_descriptor_pool)
+			.writeBuffer(0, &bufferInfo)
+			.build(g_descriptor_sets[i]);
+	}
+
+	SimpleRenderSystem render_system{ m_device,m_renderer.get_swapchain_renderpass(),g_set_layout->getDescriptorSetLayout()};
 	Camera camera{};
 	float aspect;
 	//camera.setViewDirection(glm::vec3(0.f), glm::vec3(0.5f, 0.f, 1.f));
@@ -64,7 +77,8 @@ void sve::TestApp::run() {
 				frame_index,
 				frame_time,
 				cmb_buff,
-				camera
+				camera,
+				g_descriptor_sets[frame_index]
 			};
 
 			GlobalUBO ubo{};
@@ -83,7 +97,15 @@ void sve::TestApp::run() {
 
 sve::TestApp::TestApp()
 {
+	g_descriptor_pool =
+		DescriptorPool::Builder(m_device)
+		.setMaxSets(SwapChain::MAX_FRAMES_IN_FLIGHT)
+		.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, SwapChain::MAX_FRAMES_IN_FLIGHT)
+		.build();
+
 	load_gameobjects();
+
+
 }
 
 sve::TestApp::~TestApp()

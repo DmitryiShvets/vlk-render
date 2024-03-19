@@ -9,7 +9,7 @@ namespace sve {
 	class SimpleRenderSystem {
 	public:
 
-		SimpleRenderSystem(Device& device,VkRenderPass render_pass);
+		SimpleRenderSystem(Device& device,VkRenderPass render_pass, VkDescriptorSetLayout descriptor_layout);
 		~SimpleRenderSystem();
 
 		SimpleRenderSystem(const SimpleRenderSystem&) = delete;
@@ -18,7 +18,7 @@ namespace sve {
 		void render_gameobjects(FrameInfo& frame_info, std::vector<GameObject>& objects);
 
 	private:
-		void create_pipline_layout();
+		void create_pipline_layout(VkDescriptorSetLayout descriptor_layout);
 		void create_pipline(VkRenderPass render_pass);
 
 		Device& m_device;

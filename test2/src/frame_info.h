@@ -10,5 +10,6 @@ namespace sve {
 		float frameTime;
 		VkCommandBuffer commandBuffer;
 		Camera& camera;
+		VkDescriptorSet descriptor_set;
 	};
 }  // 

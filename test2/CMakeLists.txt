@@ -30,7 +30,7 @@ set(PROJ_SRC
  "src/utils.h"
  "src/buffer.h"
  "src/buffer.cpp"
- "src/frame_info.h")
+ "src/frame_info.h" "src/descriptor_set.h" "src/descriptor_set.cpp")
 
 add_executable (${PROJ_NAME} ${PROJ_SRC} )
 
