@@ -59,8 +59,8 @@ void sve::SimpleRenderSystem::create_pipline(VkRenderPass render_pass)
 
 	m_pipeline = std::make_unique<PipeLine>(m_device,
 		pipeline_config,
-		"../../../../test2/res/shaders/v_test.vert.spv",
-		"../../../../test2/res/shaders/f_test.frag.spv");
+		"../../../../test2/res/shaders/texture.vert.spv",
+		"../../../../test2/res/shaders/texture.frag.spv");
 }
 
 
@@ -85,7 +85,7 @@ void sve::SimpleRenderSystem::render_gameobjects(FrameInfo& frame_info, std::vec
 
 		PushConstantData push_data{};
 
-		push_data.modelMatrix = obj.transform.mat4();
+		push_data.modelMatrix = obj.transform.model_matrix();
 		push_data.normalMatrix = obj.transform.normal_matrix();
 
 		vkCmdPushConstants(

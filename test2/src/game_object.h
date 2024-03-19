@@ -10,7 +10,7 @@ namespace sve {
 		glm::vec3 scale{ 1.0f,1.0f, 1.0f };
 		glm::vec3 rotation{ 0.0f,0.0f,0.0f };
 
-		glm::mat4 mat4();
+		glm::mat4 model_matrix();
 		glm::mat3 normal_matrix();
 	};
 
@@ -33,10 +33,10 @@ namespace sve {
 		}
 		Transform transform;
 		std::shared_ptr<Model> model{};
-		glm::vec3 color;
+		//glm::vec3 color;
 
 	private:
-		GameObject(id_t id) : id_obj(id), color({ 0.2f,0.2f,0.2f }) {};
+		GameObject(id_t id) : id_obj(id) {};
 
 		id_t id_obj;
 	};

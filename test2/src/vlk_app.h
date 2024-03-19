@@ -75,7 +75,7 @@ namespace sve {
 		Device m_device{ main_window };
 		Renderer m_renderer{ main_window,m_device };
 
-        std::unique_ptr<DescriptorPool> g_descriptor_pool{};
+        std::unique_ptr<DescriptorPool> g_set_pool{};
 		std::vector<GameObject> m_objects;
 	};
 

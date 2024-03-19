@@ -3,6 +3,7 @@
 #include "camera.h"
 #include "user_input_controller.h"
 #include "buffer.h"
+#include "texture.h"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -34,18 +35,22 @@ void sve::TestApp::run() {
 
 	auto g_set_layout = DescriptorSetLayout::Builder(m_device)
 		.addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
+		.addBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
 		.build();
 
 	std::vector<VkDescriptorSet> g_descriptor_sets(SwapChain::MAX_FRAMES_IN_FLIGHT);
+	Texture texture(m_device, "../../../../test2/res/textures/texture.jpg");
+	Texture texture1(m_device, "../../../../test2/res/textures/awesomeface.png");
 
 	for (int i = 0; i < g_descriptor_sets.size(); i++) {
 		auto bufferInfo = uboBuffers[i]->descriptorInfo();
-		DescriptorWriter(*g_set_layout, *g_descriptor_pool)
+		DescriptorWriter(*g_set_layout, *g_set_pool)
 			.writeBuffer(0, &bufferInfo)
+			.writeImage(1, &texture.imageInfo)
 			.build(g_descriptor_sets[i]);
 	}
 
-	SimpleRenderSystem render_system{ m_device,m_renderer.get_swapchain_renderpass(),g_set_layout->getDescriptorSetLayout()};
+	SimpleRenderSystem render_system{ m_device,m_renderer.get_swapchain_renderpass(),g_set_layout->getDescriptorSetLayout() };
 	Camera camera{};
 	float aspect;
 	//camera.setViewDirection(glm::vec3(0.f), glm::vec3(0.5f, 0.f, 1.f));
@@ -71,7 +76,7 @@ void sve::TestApp::run() {
 		camera.setPerspectiveProjection(glm::radians(50.f), aspect, 0.1f, 10.f);
 
 		if (auto cmb_buff = m_renderer.start_frame()) {
-		
+
 			int frame_index = m_renderer.get_frame_index();
 			FrameInfo frame_info{
 				frame_index,
@@ -97,10 +102,11 @@ void sve::TestApp::run() {
 
 sve::TestApp::TestApp()
 {
-	g_descriptor_pool =
+	g_set_pool =
 		DescriptorPool::Builder(m_device)
 		.setMaxSets(SwapChain::MAX_FRAMES_IN_FLIGHT)
 		.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, SwapChain::MAX_FRAMES_IN_FLIGHT)
+		.addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, SwapChain::MAX_FRAMES_IN_FLIGHT)
 		.build();
 
 	load_gameobjects();
@@ -116,29 +122,30 @@ sve::TestApp::~TestApp()
 void sve::TestApp::load_gameobjects()
 {
 	///--------------2 квадрата-------------
-	//std::vector<Model::Vertex> vertices{
-	//{{-0.5f, -0.5f,0.0f}, {1.0f, 1.0f, 1.0f}},
-	//{{-0.5f, 0.5f,0.0f}, {0.0f, 1.0f, 0.0f}},
-	//{{0.5f, 0.5f,0.0f}, {0.0f, 1.0f, 0.0f}},
-	//{{0.5f, 0.5f,0.0f}, {0.0f, 1.0f, 0.0f}},
-	//{{0.5f, -0.5f,0.0f}, {0.0f, 0.0f, 1.0f}},
-	//{ { -0.5f, -0.5f,0.0f }, {1.0f, 1.0f, 1.0f} }
-	//};
-
-	//auto m_model = std::make_shared<Model>(m_device, vertices);
-
-	//auto triangle = GameObject::create_gameobject();
-	//triangle.model = m_model;
-	//triangle.color = { 0.0f, 0.0f, 0.0f };
-	//triangle.transform.translation.x = 0.5f;
-
-	//auto triangle1 = GameObject::create_gameobject();
-	//triangle1.transform.translation.x = -0.5f;
-	//triangle1.model = m_model;
-	//triangle1.color = { 1.0f, 1.0f, 1.0f };
-
-	//m_objects.push_back(std::move(triangle));
-	//m_objects.push_back(std::move(triangle1));
+	const std::vector<Model::Vertex> vertices{
+		// pos                    col                 n                   uv
+		{{ -0.5f, -0.5f,1.0f}, { 1.0f, 0.0f, 0.0f },{1.0f, 1.0f, 1.0f},{ 1.0f, 0.0f }},
+		{{0.5f, -0.5f,1.0f}, {0.0f, 1.0f, 0.0f},{1.0f, 1.0f, 1.0f},{0.0f, 0.0f}},
+		{{0.5f, 0.5f,1.0f}, {0.0f, 0.0f, 1.0f},{1.0f, 1.0f, 1.0f},{0.0f, 1.0f}},
+		{{-0.5f, 0.5f,1.0f}, {0.0f, 0.0f, 0.0f},{1.0f, 1.0f, 1.0f},{1.0f, 1.0f}}
+	};
+	const std::vector<uint32_t> indices = {
+	0, 1, 2, 2, 3, 0
+	};
+	Model::Builder builde{};
+	builde.vertices = vertices;
+	builde.indices = indices;
+	std::shared_ptr<Model> m_model = std::make_shared<Model>(m_device, builde);
+	auto triangle = GameObject::create_gameobject();
+	triangle.model = m_model;
+	triangle.transform.translation.x = 0.25f;
+	triangle.transform.scale = { 0.5f,0.5f,1.0f };
+	auto triangle1 = GameObject::create_gameobject();
+	triangle1.transform.translation.x = -0.25f;
+	triangle1.transform.scale = { 0.5f,0.5f,1.0f };
+	triangle1.model = m_model;
+	m_objects.push_back(std::move(triangle));
+	m_objects.push_back(std::move(triangle1));
 
 
 	///--------------куб-------------
@@ -150,19 +157,18 @@ void sve::TestApp::load_gameobjects()
 	//m_objects.push_back(std::move(cube));
 
 	///--------------ваза-------------
-	//std::shared_ptr<Model> lveModel = Model::create_model_fromfile(m_device, "../../../../test2/res/models/colored_cube.obj");
-	std::shared_ptr<Model> flat_mesh = Model::create_model_fromfile(m_device, "../../../../test2/res/models/flat_vase.obj");
-	auto flat = GameObject::create_gameobject();
-	flat.model = flat_mesh;
-	flat.transform.translation = { -.5f, .5f, 2.5f };
-	flat.transform.scale = { 3.0f,2.0f,3.0f };
-	m_objects.push_back(std::move(flat));
-
-	std::shared_ptr<Model> smooth_mesh = Model::create_model_fromfile(m_device, "../../../../test2/res/models/smooth_vase.obj");
-	auto smooth = GameObject::create_gameobject();
-	smooth.model = smooth_mesh;
-	smooth.transform.translation = { .5f, .5f, 2.5f };
-	smooth.transform.scale = { 3.0f,2.0f,3.0f };
-	m_objects.push_back(std::move(smooth));
+	//std::shared_ptr<Model> flat_mesh = Model::create_model_fromfile(m_device, "../../../../test2/res/models/colored_cube.obj");
+	//std::shared_ptr<Model> flat_mesh = Model::create_model_fromfile(m_device, "../../../../test2/res/models/flat_vase.obj");
+	//auto flat = GameObject::create_gameobject();
+	//flat.model = flat_mesh;
+	//flat.transform.translation = { -.5f, .5f, 2.5f };
+	//flat.transform.scale = { 1.0f,1.0f,1.0f };
+	//m_objects.push_back(std::move(flat));
+	//std::shared_ptr<Model> smooth_mesh = Model::create_model_fromfile(m_device, "../../../../test2/res/models/smooth_vase.obj");
+	//auto smooth = GameObject::create_gameobject();
+	//smooth.model = smooth_mesh;
+	//smooth.transform.translation = { .5f, .5f, 2.5f };
+	//smooth.transform.scale = { 3.0f,2.0f,3.0f };
+	//m_objects.push_back(std::move(smooth));
 
 }

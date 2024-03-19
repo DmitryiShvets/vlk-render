@@ -1,7 +1,7 @@
 #include "game_object.h"
 #include <glm/gtc/matrix_transform.hpp>
 
- glm::mat4 sve::Transform::mat4() {
+ glm::mat4 sve::Transform::model_matrix() {
      const float c3 = glm::cos(rotation.z);
      const float s3 = glm::sin(rotation.z);
      const float c2 = glm::cos(rotation.x);

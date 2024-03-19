@@ -509,7 +509,7 @@ namespace sve {
 		endSingleTimeCommands(commandBuffer);
 	}
 
-	inline void Device::transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout) {
+	void Device::transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout) {
 		VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 
 		VkImageMemoryBarrier barrier{};
@@ -604,7 +604,7 @@ namespace sve {
 		return imageView;
 	}
 
-	inline void Device::createTextureSampler(VkSampler& textureSampler) {
+	void Device::createTextureSampler(VkSampler& textureSampler) {
 		VkPhysicalDeviceProperties properties{};
 		vkGetPhysicalDeviceProperties(physicalDevice, &properties);
 
