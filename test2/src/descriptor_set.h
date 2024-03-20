@@ -76,6 +76,7 @@ namespace sve {
 		void freeDescriptors(std::vector<VkDescriptorSet>& descriptors) const;
 
 		void resetPool();
+		VkDescriptorPool get_descriptor_pool() { return descriptorPool; };
 
 	private:
 		Device& lveDevice;

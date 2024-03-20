@@ -30,11 +30,15 @@ set(PROJ_SRC
  "src/utils.h"
  "src/buffer.h"
  "src/buffer.cpp"
- "src/frame_info.h" "src/descriptor_set.h" "src/descriptor_set.cpp")
+ "src/frame_info.h"
+ "src/descriptor_set.h"
+ "src/descriptor_set.cpp"
+)
 
 add_executable (${PROJ_NAME} ${PROJ_SRC} )
 
-target_include_directories(${PROJ_NAME} PRIVATE src)
-find_package(Vulkan REQUIRED)
+target_include_directories(${PROJ_NAME} PRIVATE src )
 
-target_link_libraries(${PROJ_NAME} PRIVATE Vulkan::Vulkan glfw glm)
+target_sources(${PROJ_NAME} PRIVATE)
+
+target_link_libraries(${PROJ_NAME} PRIVATE Vulkan::Vulkan glfw glm im-core im-glfw im-vulkan)

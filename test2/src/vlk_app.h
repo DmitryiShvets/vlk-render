@@ -1,4 +1,5 @@
 #pragma once
+
 #include "main_window.h"
 #include "renderer.h"
 #include "game_object.h"
@@ -21,6 +22,8 @@ namespace sve {
 
 	private:
 		void load_gameobjects();
+        
+        void init_imgui();
 
         std::unique_ptr<Model> createCubeModel(Device& device, glm::vec3 offset) {
             Model::Builder modelBuilder{};
@@ -70,7 +73,7 @@ namespace sve {
 
             return std::make_unique<Model>(device, modelBuilder);
         }
-
+        bool show_another_window = false;
 		MainWindow main_window{ WIDTH,HEIGHT,"Test app" };
 		Device m_device{ main_window };
 		Renderer m_renderer{ main_window,m_device };

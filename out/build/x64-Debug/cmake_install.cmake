@@ -36,6 +36,7 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   include("C:/Users/Dmitry/vlk_test/out/build/x64-Debug/glfw/cmake_install.cmake")
   include("C:/Users/Dmitry/vlk_test/out/build/x64-Debug/glm/cmake_install.cmake")
+  include("C:/Users/Dmitry/vlk_test/out/build/x64-Debug/imgui/cmake_install.cmake")
   include("C:/Users/Dmitry/vlk_test/out/build/x64-Debug/test1/cmake_install.cmake")
   include("C:/Users/Dmitry/vlk_test/out/build/x64-Debug/test2/cmake_install.cmake")
 

@@ -5,6 +5,10 @@
 #include "buffer.h"
 #include "texture.h"
 
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_vulkan.h"
+
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
@@ -36,7 +40,7 @@ void sve::TestApp::run() {
 	auto g_set_layout = DescriptorSetLayout::Builder(m_device)
 		.addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
 		.addBinding(1, VK_DESCRIPTOR_TYPE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
-		.addBinding(2, VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, VK_SHADER_STAGE_FRAGMENT_BIT,2)
+		.addBinding(2, VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, VK_SHADER_STAGE_FRAGMENT_BIT, 2)
 		.build();
 
 	std::vector<VkDescriptorSet> g_descriptor_sets(SwapChain::MAX_FRAMES_IN_FLIGHT);
@@ -84,7 +88,7 @@ void sve::TestApp::run() {
 		auto new_time = std::chrono::high_resolution_clock::now();
 		float frame_time = std::chrono::duration<float, std::chrono::seconds::period>(new_time - curr_time).count();
 		curr_time = new_time;
-
+		
 		camera_controller.moveInPlaneXZ(main_window.get_window_decrtiptor(), frame_time, camera_object);
 		camera.setViewYXZ(camera_object.transform.translation, camera_object.transform.rotation);
 
@@ -110,11 +114,31 @@ void sve::TestApp::run() {
 
 			m_renderer.strart_swapchain_renderpass(cmb_buff);
 			render_system.render_gameobjects(frame_info, m_objects);
+			ImGui_ImplVulkan_NewFrame();
+			ImGui_ImplGlfw_NewFrame();
+			ImGui::NewFrame();
+
+
+			if (show_another_window)
+			{
+				ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+				ImGui::Text("Hello from another window!");
+				if (ImGui::Button("Close Me"))
+					show_another_window = false;
+				ImGui::End();
+			}
+			//ImGui::ShowDemoWindow();
+
+			ImGui::Render();
+			ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), cmb_buff, nullptr);
 			m_renderer.end_swapchain_renderpass(cmb_buff);
 			m_renderer.end_frame();
 		}
 	}
 	vkDeviceWaitIdle(m_device.device());
+	ImGui_ImplVulkan_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 	vkDestroySampler(m_device.device(), sampler, nullptr);
 }
 
@@ -122,15 +146,16 @@ sve::TestApp::TestApp()
 {
 	g_set_pool =
 		DescriptorPool::Builder(m_device)
-		.setMaxSets(2)
+		.setMaxSets(4)
+		.setPoolFlags(VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT)
 		.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, SwapChain::MAX_FRAMES_IN_FLIGHT)
 		.addPoolSize(VK_DESCRIPTOR_TYPE_SAMPLER, SwapChain::MAX_FRAMES_IN_FLIGHT)
-		.addPoolSize(VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, SwapChain::MAX_FRAMES_IN_FLIGHT*2)
+		.addPoolSize(VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, SwapChain::MAX_FRAMES_IN_FLIGHT * 2)
+		.addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, SwapChain::MAX_FRAMES_IN_FLIGHT)
 		.build();
 
 	load_gameobjects();
-
-
+	init_imgui();
 }
 
 sve::TestApp::~TestApp()
@@ -189,5 +214,39 @@ void sve::TestApp::load_gameobjects()
 	//smooth.transform.translation = { .5f, .5f, 2.5f };
 	//smooth.transform.scale = { 3.0f,2.0f,3.0f };
 	//m_objects.push_back(std::move(smooth));
+
+}
+
+void sve::TestApp::init_imgui() {
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+	// Setup Dear ImGui style
+	ImGui::StyleColorsDark();
+	//ImGui::StyleColorsLight();
+
+	ImGui_ImplGlfw_InitForVulkan(main_window.get_window_decrtiptor(), true);
+	ImGui_ImplVulkan_InitInfo init_info = {};
+	init_info.Instance = m_device.getInstance();
+	init_info.PhysicalDevice = m_device.getPhysicalDevice();
+	init_info.Device = m_device.device();
+	//init_info.QueueFamily = g_QueueFamily;
+	init_info.Queue = m_device.presentQueue();
+	//.PipelineCache = g_PipelineCache;
+	init_info.DescriptorPool = g_set_pool->get_descriptor_pool();
+	init_info.RenderPass = m_renderer.get_swapchain_renderpass();
+	init_info.Subpass = 0;
+	init_info.MinImageCount = 2;
+	init_info.ImageCount = SwapChain::MAX_FRAMES_IN_FLIGHT;
+	init_info.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
+	//init_info.Allocator = g_Allocator;
+	//init_info.CheckVkResultFn = check_vk_result;
+	ImGui_ImplVulkan_Init(&init_info);
+
+	VkCommandBuffer cmb_buff = m_device.beginSingleTimeCommands();
+	ImGui_ImplVulkan_CreateFontsTexture();
+	m_device.endSingleTimeCommands(cmb_buff);
 
 }
