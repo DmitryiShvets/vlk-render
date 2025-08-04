@@ -144,6 +144,7 @@ void sve::TestApp::run() {
 
 sve::TestApp::TestApp()
 {
+	//https://kylehalladay.com/blog/tutorial/vulkan/2018/01/28/Textue-Arrays-Vulkan.html multy texture shader
 	g_set_pool =
 		DescriptorPool::Builder(m_device)
 		.setMaxSets(4)
